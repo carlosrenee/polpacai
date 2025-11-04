@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monte seu Açaí</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8e44ad, #3498db);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo-container {
+            margin-bottom: 15px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .admin-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .customer-form {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #8e44ad;
+        }
+
+        .section {
+            margin: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: #8e44ad;
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header.required {
+            background: #e74c3c;
+        }
+
+        .section-content {
+            padding: 20px;
+        }
+
+        .option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .option:hover {
+            background-color: #f8f9fa;
+        }
+
+        .option:last-child {
+            border-bottom: none;
+        }
+
+        .option-info {
+            flex: 1;
+        }
+
+        .option-name {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .option-price {
+            font-size: 12px;
+            color: #8e44ad;
+            font-weight: 600;
+        }
+
+        .option-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: #8e44ad;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-btn:disabled {
+            background: #ddd;
+            cursor: not-allowed;
+        }
+
+        .quantity {
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .radio-option {
+            position: relative;
+        }
+
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-option input[type="radio"]:checked + .option {
+            background-color: #e8f5e8;
+            border-left: 4px solid #27ae60;
+        }
+
+        .total-section {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 20px;
+            border-top: 1px solid #eee;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .total-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #8e44ad;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .order-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .order-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .order-btn:disabled {
+            background: #ddd;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .admin-section {
+            margin-bottom: 20px;
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .admin-btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .admin-btn-small {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-add {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .observations-section {
+            margin: 20px;
+        }
+
+        .observations-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .observations-textarea:focus {
+            outline: none;
+            border-color: #8e44ad;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 0;
+            }
+            
+            .section {
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="admin-btn" onclick="openAdminModal()">⚙️ Admin</button>
+            <div class="logo-container">
+                <div class="logo" id="logoDisplay">🍧</div>
+            </div>
+            <h1 id="businessName">Monte seu Açaí</h1>
+        </div>
+
+        <div class="customer-form">
+            <h3 style="margin-bottom: 15px; color: #8e44ad;">📝 Seus Dados</h3>
+            <div class="form-group">
+                <label for="customerName">Nome Completo *</label>
+                <input type="text" id="customerName" required>
+            </div>
+            <div class="form-group">
+                <label for="customerNeighborhood">Bairro *</label>
+                <input type="text" id="customerNeighborhood" required>
+            </div>
+            <div class="form-group">
+                <label for="customerStreet">Rua *</label>
+                <input type="text" id="customerStreet" required>
+            </div>
+            <div class="form-group">
+                <label for="customerNumber">Número da Casa *</label>
+                <input type="text" id="customerNumber" required>
+            </div>
+            <div class="form-group">
+                <label for="customerPhone">Telefone *</label>
+                <input type="tel" id="customerPhone" required>
+            </div>
+        </div>
+
+        <div id="menuSections"></div>
+
+        <div class="observations-section">
+            <div class="section">
+                <div class="section-header">
+                    <span>📝 Observações</span>
+                </div>
+                <div class="section-content">
+                    <textarea class="observations-textarea" id="observations" placeholder="Alguma observação especial? Ex: sem gelo, açaí bem gelado, etc."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="total-section">
+            <div class="total-price" id="totalPrice">Total: R$ 0,00</div>
+            <button class="order-btn" onclick="sendOrder()">🚀 Finalizar Pedido</button>
+        </div>
+    </div>
+
+    <!-- Modal Admin -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Painel Admin</h2>
+                <span class="close" onclick="closeAdminModal()">&times;</span>
+            </div>
+            
+            <div id="loginSection">
+                <input type="password" id="adminPassword" placeholder="Senha" class="admin-input">
+                <button onclick="adminLogin()" class="order-btn">Entrar</button>
+            </div>
+
+            <div id="adminPanel" style="display: none;">
+                <div class="admin-section">
+                    <h3>🏪 Dados do Negócio</h3>
+                    <input type="text" id="editBusinessName" placeholder="Nome do Negócio" class="admin-input">
+                    <input type="text" id="editLogo" placeholder="Logo (emoji ou URL)" class="admin-input">
+                    <button onclick="updateBusinessInfo()" class="btn-edit admin-btn-small">Atualizar</button>
+                </div>
+
+                <div class="admin-section">
+                    <h3>📋 Gerenciar Menu</h3>
+                    <select id="sectionSelect" class="admin-input">
+                        <option value="">Selecionar Seção</option>
+                    </select>
+                    <input type="text" id="itemName" placeholder="Nome do Item" class="admin-input">
+                    <input type="number" id="itemPrice" placeholder="Preço" step="0.01" class="admin-input">
+                    <div class="admin-btn-group">
+                        <button onclick="addMenuItem()" class="btn-add admin-btn-small">Adicionar</button>
+                        <button onclick="editMenuItem()" class="btn-edit admin-btn-small">Editar</button>
+                        <button onclick="deleteMenuItem()" class="btn-delete admin-btn-small">Excluir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados do sistema
+        let businessData = {
+            name: "Monte seu Açaí",
+            logo: "🍧",
+            whatsapp: "86988778490"
+        };
+
+        let menuData = {
+            "Peso Total da sua Porção": {
+                type: "radio",
+                required: true,
+                options: [
+                    { name: "300g", price: 16.27 },
+                    { name: "400g", price: 21.36 },
+                    { name: "500g", price: 26.45 },
+                    { name: "600g", price: 31.54 },
+                    { name: "700g", price: 36.63 },
+                    { name: "800g", price: 41.72 },
+                    { name: "1kg", price: 51.90 }
+                ]
+            },
+            "Escolha seu Açaí": {
+                type: "radio",
+                required: true,
+                options: [
+                    { name: "Açaí adoçado", price: 0 },
+                    { name: "Açaí sem açucar", price: 0 },
+                    { name: "Não incluir", price: 0 }
+                ]
+            },
+            "Escolha até 2 opções de cremes": {
+                type: "multiple",
+                required: false,
+                maxSelections: 2,
+                options: [
+                    { name: "Creme de ninho", price: 0 },
+                    { name: "Creme de oreo", price: 0 },
+                    { name: "Creme de paçoca", price: 0 },
+                    { name: "Creme de cupuaçu", price: 0 },
+                    { name: "Creme de bacuri", price: 0 },
+                    { name: "Não incluir", price: 0 }
+                ]
+            },
+            "Escolha até 4 Acompanhamentos": {
+                type: "multiple",
+                required: false,
+                maxSelections: 4,
+                options: [
+                    { name: "Amendoim", price: 0 },
+                    { name: "Canudinho", price: 0 },
+                    { name: "Castanha", price: 0 },
+                    { name: "Castanha triturada", price: 0 },
+                    { name: "Castanha caramelizada", price: 0 },
+                    { name: "Chocoball mesclado", price: 0 },
+                    { name: "Doce de Leite", price: 0 },
+                    { name: "Farinha de Tapioca", price: 0 },
+                    { name: "Farinha de Tapioca caramelizada", price: 0 },
+                    { name: "Farinha Láctea", price: 0 },
+                    { name: "Flocos de Arroz", price: 0 },
+                    { name: "Flocos de Arroz caramelizado", price: 0 },
+                    { name: "Gotas Chocolate", price: 0 },
+                    { name: "Granola", price: 0 },
+                    { name: "Leite em pó", price: 0 },
+                    { name: "MMs", price: 0 },
+                    { name: "Ovomaltine", price: 0 },
+                    { name: "Paçoca Amendoim", price: 0 },
+                    { name: "Sucrilhos", price: 0 },
+                    { name: "Jujuba", price: 0 },
+                    { name: "Chocoball Chocolate", price: 0 }
+                ]
+            },
+            "Escolha até 3 Coberturas ou caldas": {
+                type: "multiple",
+                required: false,
+                maxSelections: 3,
+                options: [
+                    { name: "Calda de cereja", price: 0 },
+                    { name: "Calda de morango", price: 0 },
+                    { name: "Cobertura de chocolate", price: 0 },
+                    { name: "Cobertura de morango", price: 0 },
+                    { name: "Cobertura de menta", price: 0 },
+                    { name: "Cobertura de caramelo", price: 0 },
+                    { name: "Leite condensado", price: 0 },
+                    { name: "Mel", price: 0 },
+                    { name: "Xarope de guaraná", price: 0 }
+                ]
+            },
+            "Escolha até 2 Frutas": {
+                type: "multiple",
+                required: false,
+                maxSelections: 2,
+                options: [
+                    { name: "Banana", price: 0 },
+                    { name: "Manga", price: 0 },
+                    { name: "Kiwi", price: 0 },
+                    { name: "Uva", price: 0 },
+                    { name: "Morango", price: 0 }
+                ]
+            },
+            "Escolha o tipo de embalagem": {
+                type: "radio",
+                required: false,
+                options: [
+                    { name: "Copo", price: 0 },
+                    { name: "Térmica", price: 1 }
+                ]
+            },
+            "Deseja colher descartável?": {
+                type: "radio",
+                required: false,
+                options: [
+                    { name: "Sim", price: 0 },
+                    { name: "Não", price: 0 }
+                ]
+            },
+            "Forma de pagamento": {
+                type: "radio",
+                required: true,
+                options: [
+                    { name: "Pix", price: 0 },
+                    { name: "Cartão", price: 0 },
+                    { name: "Dinheiro", price: 0 }
+                ]
+            }
+        };
+
+        let currentOrder = {};
+
+        // Função para renderizar o menu
+        function renderMenu() {
+            const container = document.getElementById('menuSections');
+            container.innerHTML = '';
+
+            Object.keys(menuData).forEach(sectionName => {
+                const section = menuData[sectionName];
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'section';
+                sectionDiv.innerHTML = `
+                    <div class="section-header ${section.required ? 'required' : ''}">
+                        <span>${sectionName} ${section.required ? '*' : ''}</span>
+                        ${section.maxSelections ? `<small>Máx: ${section.maxSelections}</small>` : ''}
+                    </div>
+                    <div class="section-content" id="section-${sectionName.replace(/\s+/g, '_')}">
+                        ${renderSectionOptions(sectionName, section)}
+                    </div>
+                `;
+                container.appendChild(sectionDiv);
+            });
+
+            updateTotal();
+        }
+
+        function renderSectionOptions(sectionName, section) {
+            let html = '';
+            
+            section.options.forEach((option, index) => {
+                if (section.type === 'radio') {
+                    html += `
+                        <div class="radio-option">
+                            <input type="radio" name="${sectionName}" id="${sectionName}_${index}" 
+                                   value="${option.name}" onchange="updateSelection('${sectionName}', '${option.name}', ${option.price}, 'radio')">
+                            <label for="${sectionName}_${index}" class="option">
+                                <div class="option-info">
+                                    <div class="option-name">${option.name}</div>
+                                    <div class="option-price">R$ ${option.price.toFixed(2)}</div>
+                                </div>
+                            </label>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="option">
+                            <div class="option-info">
+                                <div class="option-name">${option.name}</div>
+                                <div class="option-price">R$ ${option.price.toFixed(2)}</div>
+                            </div>
+                            <div class="option-controls">
+                                <div class="quantity-controls">
+                                    <button class="quantity-btn" onclick="changeQuantity('${sectionName}', '${option.name}', ${option.price}, -1)">-</button>
+                                    <span class="quantity" id="qty_${sectionName}_${option.name}">0</span>
+                                    <button class="quantity-btn" onclick="changeQuantity('${sectionName}', '${option.name}', ${option.price}, 1)">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            return html;
+        }
+
+        function updateSelection(sectionName, optionName, price, type) {
+            if (type === 'radio') {
+                currentOrder[sectionName] = { [optionName]: { quantity: 1, price: price } };
+            }
+            updateTotal();
+        }
+
+        function changeQuantity(sectionName, optionName, price, change) {
+            if (!currentOrder[sectionName]) {
+                currentOrder[sectionName] = {};
+            }
+
+            const current = currentOrder[sectionName][optionName] || { quantity: 0, price: price };
+            const newQuantity = Math.max(0, current.quantity + change);
+            
+            // Verificar limite de seleções
+            const section = menuData[sectionName];
+            if (section.maxSelections && change > 0) {
+                const currentSelections = Object.values(currentOrder[sectionName] || {})
+                    .reduce((sum, item) => sum + item.quantity, 0);
+                if (currentSelections >= section.maxSelections && current.quantity === 0) {
+                    alert(`Você pode selecionar no máximo ${section.maxSelections} itens desta categoria.`);
+                    return;
+                }
+            }
+
+            if (newQuantity === 0) {
+                delete currentOrder[sectionName][optionName];
+                if (Object.keys(currentOrder[sectionName]).length === 0) {
+                    delete currentOrder[sectionName];
+                }
+            } else {
+                currentOrder[sectionName][optionName] = { quantity: newQuantity, price: price };
+            }
+
+            document.getElementById(`qty_${sectionName}_${optionName}`).textContent = newQuantity;
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let total = 0;
+            Object.values(currentOrder).forEach(section => {
+                Object.values(section).forEach(item => {
+                    total += item.quantity * item.price;
+                });
+            });
+            document.getElementById('totalPrice').textContent = `Total: R$ ${total.toFixed(2)}`;
+        }
+
+        function sendOrder() {
+            // Verificar dados do cliente
+            const name = document.getElementById('customerName').value.trim();
+            const neighborhood = document.getElementById('customerNeighborhood').value.trim();
+            const street = document.getElementById('customerStreet').value.trim();
+            const number = document.getElementById('customerNumber').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+
+            if (!name || !neighborhood || !street || !number || !phone) {
+                alert('Por favor, preencha todos os seus dados pessoais.');
+                return;
+            }
+
+            // Verificar itens obrigatórios
+            const requiredSections = Object.keys(menuData).filter(section => menuData[section].required);
+            for (let section of requiredSections) {
+                if (!currentOrder[section] || Object.keys(currentOrder[section]).length === 0) {
+                    alert(`Por favor, selecione uma opção em "${section}".`);
+                    return;
+                }
+            }
+
+            // Montar pedido
+            let orderText = `🍧 Pedido de: ${name}\n`;
+            orderText += `📍 Bairro: ${neighborhood}\n`;
+            orderText += `🏠 Rua: ${street}, Nº ${number}\n`;
+            orderText += `📱 Tel: ${phone}\n`;
+            orderText += `--- Pedido ---\n`;
+
+            let total = 0;
+            Object.keys(currentOrder).forEach(sectionName => {
+                const items = Object.keys(currentOrder[sectionName]);
+                if (items.length > 0) {
+                    orderText += `\n${sectionName}:\n`;
+                    items.forEach(itemName => {
+                        const item = currentOrder[sectionName][itemName];
+                        if (item.quantity > 1) {
+                            orderText += `• ${itemName} (${item.quantity}x) - R$ ${(item.price * item.quantity).toFixed(2)}\n`;
+                        } else {
+                            orderText += `• ${itemName}${item.price > 0 ? ` - R$ ${item.price.toFixed(2)}` : ''}\n`;
+                        }
+                        total += item.quantity * item.price;
+                    });
+                }
+            });
+
+            const observations = document.getElementById('observations').value.trim();
+            if (observations) {
+                orderText += `\nObservações: ${observations}\n`;
+            }
+
+            orderText += `\n💰 Total: R$ ${total.toFixed(2)}`;
+
+            // Enviar para WhatsApp
+            const whatsappUrl = `https://wa.me/${businessData.whatsapp}?text=${encodeURIComponent(orderText)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Funções do Admin
+        function openAdminModal() {
+            document.getElementById('adminModal').style.display = 'block';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function adminLogin() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === '1985') {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadAdminData();
+            } else {
+                alert('Senha incorreta!');
+            }
+        }
+
+        function loadAdminData() {
+            document.getElementById('editBusinessName').value = businessData.name;
+            document.getElementById('editLogo').value = businessData.logo;
+            
+            const sectionSelect = document.getElementById('sectionSelect');
+            sectionSelect.innerHTML = '<option value="">Selecionar Seção</option>';
+            Object.keys(menuData).forEach(section => {
+                sectionSelect.innerHTML += `<option value="${section}">${section}</option>`;
+            });
+        }
+
+        function updateBusinessInfo() {
+            const newName = document.getElementById('editBusinessName').value.trim();
+            const newLogo = document.getElementById('editLogo').value.trim();
+            
+            if (newName) {
+                businessData.name = newName;
+                document.getElementById('businessName').textContent = newName;
+            }
+            
+            if (newLogo) {
+                businessData.logo = newLogo;
+                document.getElementById('logoDisplay').textContent = newLogo;
+            }
+            
+            alert('Informações atualizadas!');
+        }
+
+        function addMenuItem() {
+            const section = document.getElementById('sectionSelect').value;
+            const name = document.getElementById('itemName').value.trim();
+            const price = parseFloat(document.getElementById('itemPrice').value) || 0;
+            
+            if (!section || !name) {
+                alert('Selecione uma seção e digite o nome do item.');
+                return;
+            }
+            
+            menuData[section].options.push({ name: name, price: price });
+            renderMenu();
+            
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemPrice').value = '';
+            alert('Item adicionado!');
+        }
+
+        function editMenuItem() {
+            alert('Para editar um item, primeiro delete-o e adicione novamente com as informações corretas.');
+        }
+
+        function deleteMenuItem() {
+            const section = document.getElementById('sectionSelect').value;
+            const name = document.getElementById('itemName').value.trim();
+            
+            if (!section || !name) {
+                alert('Selecione uma seção e digite o nome do item para excluir.');
+                return;
+            }
+            
+            const index = menuData[section].options.findIndex(item => item.name === name);
+            if (index !== -1) {
+                menuData[section].options.splice(index, 1);
+                renderMenu();
+                document.getElementById('itemName').value = '';
+                alert('Item excluído!');
+            } else {
+                alert('Item não encontrado!');
+            }
+        }
+
+        // Fechar modal clicando fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('adminModal');
+            if (event.target === modal) {
+                closeAdminModal();
+            }
+        }
+
+        // Inicializar aplicação
+        document.addEventListener('DOMContentLoaded', function() {
+            renderMenu();
+        });
+    </script>
+</body>
+</html>
